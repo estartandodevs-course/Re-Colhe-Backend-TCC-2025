@@ -1,0 +1,57 @@
+
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36202.13
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReColhe.AppHost", "ReColhe.AppHost\ReColhe.AppHost.csproj", "{1D6D6AFD-2986-4AC2-93E6-04865F042041}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReColhe.ServiceDefaults", "ReColhe.ServiceDefaults\ReColhe.ServiceDefaults.csproj", "{154C237E-6A0C-D916-B189-CEB42170FC2E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{1B38B639-4D37-419D-B9DD-838683B1027A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReColhe.Domain", "src\ReColhe.Domain\ReColhe.Domain.csproj", "{95974329-9ED5-4511-9A3A-F2F5751BF9BC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReColhe.Application", "src\ReColhe.Application\ReColhe.Application.csproj", "{19CEE86D-F6F2-4282-A82B-EAAA3DB866F1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReColhe.API", "src\ReColhe.API\ReColhe.API.csproj", "{9642C8C8-A716-43C5-87CB-9220D6017ACD}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1D6D6AFD-2986-4AC2-93E6-04865F042041}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1D6D6AFD-2986-4AC2-93E6-04865F042041}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1D6D6AFD-2986-4AC2-93E6-04865F042041}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1D6D6AFD-2986-4AC2-93E6-04865F042041}.Release|Any CPU.Build.0 = Release|Any CPU
+		{154C237E-6A0C-D916-B189-CEB42170FC2E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{154C237E-6A0C-D916-B189-CEB42170FC2E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{154C237E-6A0C-D916-B189-CEB42170FC2E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{154C237E-6A0C-D916-B189-CEB42170FC2E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{95974329-9ED5-4511-9A3A-F2F5751BF9BC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{95974329-9ED5-4511-9A3A-F2F5751BF9BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{95974329-9ED5-4511-9A3A-F2F5751BF9BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{95974329-9ED5-4511-9A3A-F2F5751BF9BC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{19CEE86D-F6F2-4282-A82B-EAAA3DB866F1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{19CEE86D-F6F2-4282-A82B-EAAA3DB866F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{19CEE86D-F6F2-4282-A82B-EAAA3DB866F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{19CEE86D-F6F2-4282-A82B-EAAA3DB866F1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9642C8C8-A716-43C5-87CB-9220D6017ACD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9642C8C8-A716-43C5-87CB-9220D6017ACD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9642C8C8-A716-43C5-87CB-9220D6017ACD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9642C8C8-A716-43C5-87CB-9220D6017ACD}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{95974329-9ED5-4511-9A3A-F2F5751BF9BC} = {1B38B639-4D37-419D-B9DD-838683B1027A}
+		{19CEE86D-F6F2-4282-A82B-EAAA3DB866F1} = {1B38B639-4D37-419D-B9DD-838683B1027A}
+		{9642C8C8-A716-43C5-87CB-9220D6017ACD} = {1B38B639-4D37-419D-B9DD-838683B1027A}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {0B7D3A97-B21A-4915-88CD-435F2BB8F9B6}
+	EndGlobalSection
+EndGlobal
+
