@@ -1,5 +1,4 @@
 using Amazon.Lambda.AspNetCoreServer.Hosting;
-using ReColhe.Domain.Repository;
 using ReColhe.API.Infrastructure;
 using ReColhe.ServiceDefaults;
 using Microsoft.AspNetCore.Diagnostics;
@@ -13,14 +12,11 @@ builder.AddServiceDefaults();
 // Add Lambda hosting
 builder.Services.AddAWSLambdaHosting(LambdaEventSource.HttpApi);
 
-var connectionString = builder.Configuration.GetConnectionString("Default");
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<ReColheDbContext>(options =>
 {
     options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
 });
-
-// Add Repository
-builder.Services.AddScoped<IOrderRepository, MySqlOrderRepository>();
 
 // Add Controllers
 builder.Services.AddControllers();
