@@ -3,6 +3,8 @@ using ReColhe.Domain.Repository;
 using ReColhe.API.Infrastructure;
 using ReColhe.ServiceDefaults;
 using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.EntityFrameworkCore;
+using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,8 +13,18 @@ builder.AddServiceDefaults();
 // Add Lambda hosting
 builder.Services.AddAWSLambdaHosting(LambdaEventSource.HttpApi);
 
+// Add Entity Framework Core
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
+    ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+
+builder.Services.AddDbContext<ReColheDbContext>(options =>
+{
+    // Usar MySQL 8.0 como padrão. Se necessário, ajuste para a versão específica do servidor
+    options.UseMySql(connectionString, new MySqlServerVersion(new Version(8, 0, 21)));
+});
+
 // Add Repository
-builder.Services.AddSingleton<IOrderRepository, InMemoryOrderRepository>();
+builder.Services.AddScoped<IOrderRepository, MySqlOrderRepository>();
 
 // Add Controllers
 builder.Services.AddControllers();
