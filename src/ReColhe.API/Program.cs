@@ -13,14 +13,10 @@ builder.AddServiceDefaults();
 // Add Lambda hosting
 builder.Services.AddAWSLambdaHosting(LambdaEventSource.HttpApi);
 
-// Add Entity Framework Core
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
-    ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-
+var connectionString = builder.Configuration.GetConnectionString("Default");
 builder.Services.AddDbContext<ReColheDbContext>(options =>
 {
-    // Usar MySQL 8.0 como padrão. Se necessário, ajuste para a versão específica do servidor
-    options.UseMySql(connectionString, new MySqlServerVersion(new Version(8, 0, 21)));
+    options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
 });
 
 // Add Repository
