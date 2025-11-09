@@ -1,0 +1,22 @@
+﻿using ReColhe.Domain.Entidades;
+
+namespace ReColhe.Domain.Repository
+{
+    public interface IUsuarioRepository
+    {
+        Task<Usuario?> ObterPorIdAsync(int id);
+        Task<Usuario?> ObterPorEmailAsync(string email);
+        Task<bool> EmailJaUtilizado(string email);
+        Task<bool> EmpresaExiste(int empresaId);
+        Task Adicionar(Usuario usuario);
+        Task Excluir(Usuario usuario); // ← MÉTODO NOVO
+        Task<int> CommitAsync(System.Threading.CancellationToken cancellationToken = default);
+
+        IUnitOfWork UnitOfWork { get; }
+    }
+
+    public interface IUnitOfWork
+    {
+        Task<int> CommitAsync(System.Threading.CancellationToken cancellationToken = default);
+    }
+}
