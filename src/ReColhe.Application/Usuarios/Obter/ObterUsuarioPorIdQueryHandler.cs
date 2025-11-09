@@ -1,55 +1,51 @@
 ﻿using MediatR;
-using Microsoft.EntityFrameworkCore;
-using ReColhe.Domain.Repository;
 using ReColhe.Application.Mediator;
+using ReColhe.Domain.Repository;
+using System.Net;
 
 namespace ReColhe.Application.Usuarios.Obter
 {
-    public class ObterUsuarioPorIdQueryHandler
-        : IRequestHandler<ObterUsuarioPorIdQuery, CommandResponse<ObterUsuarioPorIdResponse>>
+    public class ObterUsuarioPorIdQueryHandler : IRequestHandler<ObterUsuarioPorIdQuery, CommandResponse<ObterUsuarioPorIdResponse>>
     {
-        private readonly IApplicationDbContext _context;
+        private readonly IUsuarioRepository _usuarioRepository;
 
-        public ObterUsuarioPorIdQueryHandler(IApplicationDbContext context)
+        public ObterUsuarioPorIdQueryHandler(IUsuarioRepository usuarioRepository)
         {
-            _context = context;
+            _usuarioRepository = usuarioRepository;
         }
 
-        public async Task<CommandResponse<ObterUsuarioPorIdResponse>> Handle(
-            ObterUsuarioPorIdQuery request,
-            CancellationToken cancellationToken)
+        public async Task<CommandResponse<ObterUsuarioPorIdResponse>> Handle(ObterUsuarioPorIdQuery request, CancellationToken cancellationToken)
         {
-            var usuario = await _context.Usuarios
-                .Include(u => u.TipoUsuario)
-                .Include(u => u.Empresa)
-                .Where(u => u.UsuarioId == request.UsuarioId)
-                .Select(u => new UsuarioDetalhadoResponse
+            try
+            {
+                var usuario = await _usuarioRepository.ObterPorIdAsync(request.UsuarioId);
+
+                if (usuario == null)
                 {
-                    UsuarioId = u.UsuarioId,
-                    Nome = u.Nome,
-                    Email = u.Email,
-                    EmpresaId = u.EmpresaId,
-                    TipoUsuario = new TipoUsuarioResponse
-                    {
-                        Id = u.TipoUsuario.TipoUsuarioId,
-                        Tipo = u.TipoUsuario.Nome
-                    }
-                })
-                .FirstOrDefaultAsync(cancellationToken);
+                    return CommandResponse<ObterUsuarioPorIdResponse>.AdicionarErro(
+                        "Usuário não encontrado.",
+                        HttpStatusCode.NotFound
+                    );
+                }
 
-            if (usuario == null)
-            {
-                return CommandResponse<ObterUsuarioPorIdResponse>.AdicionarErro(
-                    "Usuário não encontrado.",
-                    System.Net.HttpStatusCode.NotFound);
+                var response = new ObterUsuarioPorIdResponse
+                {
+                    UsuarioId = usuario.UsuarioId,
+                    Nome = usuario.Nome,
+                    Email = usuario.Email,
+                    TipoUsuarioId = usuario.TipoUsuarioId,
+                    EmpresaId = usuario.EmpresaId,
+                    EmpresaNome = usuario.Empresa?.NomeFantasia ?? string.Empty
+                };
+
+                return CommandResponse<ObterUsuarioPorIdResponse>.Sucesso(response);
             }
-
-            var response = new ObterUsuarioPorIdResponse
+            catch (Exception ex)
             {
-                Usuario = usuario
-            };
-
-            return CommandResponse<ObterUsuarioPorIdResponse>.Sucesso(response);
+                return CommandResponse<ObterUsuarioPorIdResponse>.ErroCritico(
+                    mensagem: $"Ocorreu um erro ao buscar o usuário: {ex.Message}"
+                );
+            }
         }
     }
 }

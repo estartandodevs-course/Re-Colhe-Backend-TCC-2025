@@ -1,16 +1,21 @@
-using Amazon.Lambda.AspNetCoreServer.Hosting;
-using ReColhe.API.Infrastructure;
-using ReColhe.ServiceDefaults;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.EntityFrameworkCore;
-using Pomelo.EntityFrameworkCore.MySql;
-
+using ReColhe.API.Infrastructure;
+using ReColhe.API.Infrastructure.Repository;
+using ReColhe.Application.Usuarios.Criar;
+using ReColhe.Domain.Repository;
+using ReColhe.ServiceDefaults;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.AddServiceDefaults();
 
 // Add Lambda hosting
 builder.Services.AddAWSLambdaHosting(LambdaEventSource.HttpApi);
+
+
+builder.Services.AddScoped<IPevRepository, PevRepository>();
+builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
+
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 if (string.IsNullOrEmpty(connectionString))
@@ -35,6 +40,11 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 // Add Controllers
 builder.Services.AddControllers();
 
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(
+    typeof(CriarUsuarioCommand).Assembly
+));
+
+
 // Add Swagger/OpenAPI
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
@@ -45,7 +55,7 @@ builder.Services.AddSwaggerGen(c =>
         Title = "ReColhe API",
         Description = "AWS Lambda ASP.NET Core API ReColhe",
     });
-    
+
     // Include XML comments
     var xmlFile = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";
     var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
@@ -76,7 +86,7 @@ using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
     var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
-    
+
     try
     {
         if (db.Database.GetPendingMigrations().Any())
