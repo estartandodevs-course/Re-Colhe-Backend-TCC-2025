@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using ReColhe.Domain.Entidades;
 
 namespace ReColhe.API.Infrastructure;
 
@@ -8,9 +9,13 @@ public class ApplicationDbContext : DbContext
     {
     }
 
+    public DbSet<Usuario> Usuarios { get; set; }
+    public DbSet<Empresa> Empresas { get; set; }
+    public DbSet<TipoUsuario> TiposUsuario { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
-        // Model configurations will be added here as needed
+        // Configurações de modelo serão adicionadas aqui quando precisar.
     }
 }
