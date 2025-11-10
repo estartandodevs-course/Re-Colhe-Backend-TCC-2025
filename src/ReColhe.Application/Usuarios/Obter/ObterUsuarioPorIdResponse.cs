@@ -2,8 +2,12 @@
 {
     public class ObterUsuarioPorIdResponse
     {
-        public string Mensagem { get; set; } = "Usuário recuperado com sucesso.";
-        public UsuarioDetalhadoResponse Usuario { get; set; } = new();
+        public int UsuarioId { get; set; }
+        public string Nome { get; set; } = string.Empty;
+        public string Email { get; set; } = string.Empty;
+        public int TipoUsuarioId { get; set; }
+        public int? EmpresaId { get; set; }
+        public string EmpresaNome { get; set; } = string.Empty;
     }
 
     public class UsuarioDetalhadoResponse

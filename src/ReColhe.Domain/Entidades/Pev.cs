@@ -1,0 +1,40 @@
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace ReColhe.Domain.Entidades
+{
+    /// <summary>
+    /// Representa a entidade Pev (Ponto de Entrega Voluntária) no banco de dados.
+    /// </summary>
+    public class Pev
+    {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int PevId { get; set; }
+
+        [Required]
+        [MaxLength(255)]
+        public string Nome { get; set; } = string.Empty;
+
+        [MaxLength(500)]
+        public string Endereco { get; set; } = string.Empty;
+
+        [MaxLength(20)]
+        public string Telefone { get; set; } = string.Empty;
+
+        [MaxLength(255)]
+        public string HorarioFuncionamento { get; set; } = string.Empty;
+
+        [MaxLength(255)]
+        public string Materiais { get; set; } = string.Empty;
+
+        [Column(TypeName = "decimal(10, 8)")]
+        public decimal Latitude { get; set; }
+
+        [Column(TypeName = "decimal(11, 8)")]
+        public decimal Longitude { get; set; }
+
+        // Relação de Pev para a tabela de junção
+        public virtual ICollection<UsuarioPevFavorito> UsuariosFavoritos { get; set; } = new List<UsuarioPevFavorito>();
+    }
+}

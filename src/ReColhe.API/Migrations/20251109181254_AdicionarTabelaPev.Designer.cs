@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ReColhe.API.Infrastructure;
 
@@ -11,9 +12,11 @@ using ReColhe.API.Infrastructure;
 namespace ReColhe.API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251109181254_AdicionarTabelaPev")]
+    partial class AdicionarTabelaPev
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -145,24 +148,6 @@ namespace ReColhe.API.Migrations
                     b.ToTable("Usuarios");
                 });
 
-            modelBuilder.Entity("ReColhe.Domain.Entidades.UsuarioPevFavorito", b =>
-                {
-                    b.Property<int>("UsuarioId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("PevId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("DataAdicao")
-                        .HasColumnType("datetime(6)");
-
-                    b.HasKey("UsuarioId", "PevId");
-
-                    b.HasIndex("PevId");
-
-                    b.ToTable("UsuarioPevFavoritos");
-                });
-
             modelBuilder.Entity("ReColhe.Domain.Entidades.Usuario", b =>
                 {
                     b.HasOne("ReColhe.Domain.Entidades.Empresa", "Empresa")
@@ -178,35 +163,6 @@ namespace ReColhe.API.Migrations
                     b.Navigation("Empresa");
 
                     b.Navigation("TipoUsuario");
-                });
-
-            modelBuilder.Entity("ReColhe.Domain.Entidades.UsuarioPevFavorito", b =>
-                {
-                    b.HasOne("ReColhe.Domain.Entidades.Pev", "Pev")
-                        .WithMany("UsuariosFavoritos")
-                        .HasForeignKey("PevId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ReColhe.Domain.Entidades.Usuario", "Usuario")
-                        .WithMany("PevFavoritos")
-                        .HasForeignKey("UsuarioId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Pev");
-
-                    b.Navigation("Usuario");
-                });
-
-            modelBuilder.Entity("ReColhe.Domain.Entidades.Pev", b =>
-                {
-                    b.Navigation("UsuariosFavoritos");
-                });
-
-            modelBuilder.Entity("ReColhe.Domain.Entidades.Usuario", b =>
-                {
-                    b.Navigation("PevFavoritos");
                 });
 #pragma warning restore 612, 618
         }

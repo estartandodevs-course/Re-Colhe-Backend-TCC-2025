@@ -1,45 +1,35 @@
 ﻿using MediatR;
-using Microsoft.EntityFrameworkCore;
-using ReColhe.Domain.Repository;
 using ReColhe.Application.Mediator;
+using ReColhe.Domain.Repository;
 
 namespace ReColhe.Application.Usuarios.Obter
 {
-    public class ListarUsuariosQueryHandler
-        : IRequestHandler<ListarUsuariosQuery, CommandResponse<ListarUsuariosResponse>>
+    public class ListarUsuariosQueryHandler : IRequestHandler<ListarUsuariosQuery, CommandResponse<ListarUsuariosResponse>>
     {
-        private readonly IApplicationDbContext _context;
+        private readonly IUsuarioRepository _usuarioRepository;
 
-        public ListarUsuariosQueryHandler(IApplicationDbContext context)  //
+        public ListarUsuariosQueryHandler(IUsuarioRepository usuarioRepository)
         {
-            _context = context;
+            _usuarioRepository = usuarioRepository;
         }
 
-        public async Task<CommandResponse<ListarUsuariosResponse>> Handle(
-            ListarUsuariosQuery request,
-            CancellationToken cancellationToken)
+        public async Task<CommandResponse<ListarUsuariosResponse>> Handle(ListarUsuariosQuery request, CancellationToken cancellationToken)
         {
-            var usuarios = await _context.Usuarios
-                .Include(u => u.TipoUsuario)
-                .Select(u => new UsuarioResponse
-                {
-                    UsuarioId = u.UsuarioId,
-                    Nome = u.Nome,
-                    Email = u.Email,
-                    TipoUsuario = new TipoUsuarioResponse
-                    {
-                        Id = u.TipoUsuario.TipoUsuarioId,
-                        Tipo = u.TipoUsuario.Nome
-                    }
-                })
-                .ToListAsync(cancellationToken);
-
-            var response = new ListarUsuariosResponse
+            try
             {
-                Usuarios = usuarios
-            };
 
-            return CommandResponse<ListarUsuariosResponse>.Sucesso(response);
+                var usuariosResponse = new List<UsuarioResponse>();
+
+                var response = new ListarUsuariosResponse { Usuarios = usuariosResponse };
+
+                return await Task.FromResult(CommandResponse<ListarUsuariosResponse>.Sucesso(response));
+            }
+            catch (Exception ex)
+            {
+                return await Task.FromResult(CommandResponse<ListarUsuariosResponse>.ErroCritico(
+                    mensagem: $"Ocorreu um erro ao listar os usuários: {ex.Message}"
+                ));
+            }
         }
     }
 }
