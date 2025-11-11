@@ -13,6 +13,7 @@ namespace ReColhe.Domain.Repository
         Task Adicionar(Usuario usuario);
         Task Excluir(Usuario usuario);
         Task<int> CommitAsync(System.Threading.CancellationToken cancellationToken = default);
+        Task<IEnumerable<Usuario>> ObterTodosComTipoUsuarioAsync();
 
         IUnitOfWork UnitOfWork { get; }
 

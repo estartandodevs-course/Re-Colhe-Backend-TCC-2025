@@ -72,6 +72,13 @@ namespace ReColhe.API.Infrastructure.Repository
             _context.UsuarioPevFavoritos.Remove(favorito);
             return Task.CompletedTask;
         }
+        public async Task<IEnumerable<Usuario>> ObterTodosComTipoUsuarioAsync()
+        {
+            return await _context.Usuarios
+                .Include(u => u.TipoUsuario)  // Inclui o TipoUsuario
+                .AsNoTracking()               // Apenas leitura - melhor performance
+                .ToListAsync();
+        }
 
     }
 }
