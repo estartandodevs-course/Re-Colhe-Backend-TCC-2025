@@ -14,6 +14,12 @@ namespace ReColhe.Application.Usuarios.Editar
 
         public ValidationResult? ResultadoDasValidacoes { get; private set; }
 
+        // Construtor ORIGINAL (para deserialização JSON)
+        public EditarUsuarioCommand()
+        {
+        }
+
+        // NOVO CONSTRUTOR para receber parâmetros individuais
         public EditarUsuarioCommand(int usuarioId, string? nome, string? email)
         {
             UsuarioId = usuarioId;
@@ -25,10 +31,29 @@ namespace ReColhe.Application.Usuarios.Editar
         {
             var validacoes = new InlineValidator<EditarUsuarioCommand>();
 
+            // Valida Nome apenas se fornecido
             validacoes.RuleFor(usuario => usuario.Nome)
                 .NotEmpty()
+                .When(usuario => usuario.Nome != null)
                 .WithErrorCode(((int)HttpStatusCode.BadRequest).ToString())
-                .WithMessage("O nome do usuário deve ser informado.");
+                .WithMessage("Se informado, o nome não pode ser vazio.");
+
+            // Valida Email apenas se fornecido  
+            validacoes.RuleFor(usuario => usuario.Email)
+                .NotEmpty()
+                .When(usuario => usuario.Email != null)
+                .WithErrorCode(((int)HttpStatusCode.BadRequest).ToString())
+                .WithMessage("Se informado, o email não pode ser vazio.")
+                .EmailAddress()
+                .When(usuario => usuario.Email != null)
+                .WithErrorCode(((int)HttpStatusCode.BadRequest).ToString())
+                .WithMessage("Se informado, o email deve ser válido.");
+
+            // Valida que pelo menos um campo foi fornecido
+            validacoes.RuleFor(usuario => usuario)
+                .Must(usuario => usuario.Nome != null || usuario.Email != null)
+                .WithErrorCode(((int)HttpStatusCode.BadRequest).ToString())
+                .WithMessage("Pelo menos um campo (nome ou email) deve ser informado para edição.");
 
             ResultadoDasValidacoes = validacoes.Validate(this);
             return ResultadoDasValidacoes.IsValid;
