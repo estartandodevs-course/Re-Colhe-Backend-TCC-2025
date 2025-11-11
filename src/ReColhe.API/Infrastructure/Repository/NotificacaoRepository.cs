@@ -2,10 +2,13 @@
 using ReColhe.Domain.Entidades;
 using ReColhe.Domain.Repository;
 using ReColhe.API.Infrastructure;
+using ReColhe.Domain;
 
 public class NotificacaoRepository : INotificacaoRepository
 {
     private readonly ApplicationDbContext _context;
+
+    public IUnitOfWork UnitOfWork => _context;
 
     public NotificacaoRepository(ApplicationDbContext context)
     {
@@ -27,18 +30,15 @@ public class NotificacaoRepository : INotificacaoRepository
     public async Task CriarAsync(Notificacao notificacao)
     {
         _context.Notificacoes.Add(notificacao);
-        await _context.SaveChangesAsync();
     }
 
-    public async Task MarcarComoLidaAsync(int usuarioId, int notificacaoId)
+    public async Task AtualizarAsync(Notificacao notificacao)
     {
-        var usuarioNotificacao = await _context.UsuarioNotificacoes
-            .FirstOrDefaultAsync(un => un.UsuarioId == usuarioId && un.NotificacaoId == notificacaoId);
-
-        if (usuarioNotificacao != null)
-        {
-            usuarioNotificacao.Lida = true;
-            await _context.SaveChangesAsync();
-        }
+        _context.Notificacoes.Update(notificacao);        
+    }
+        
+    public async Task RemoverAsync(Notificacao notificacao)
+    {
+        _context.Notificacoes.Remove(notificacao);
     }
 }

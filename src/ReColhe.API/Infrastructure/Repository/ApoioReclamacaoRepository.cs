@@ -2,10 +2,13 @@
 using ReColhe.Domain.Entidades;
 using ReColhe.Domain.Repository;
 using ReColhe.API.Infrastructure;
+using ReColhe.Domain;
 
 public class ApoioReclamacaoRepository : IApoioReclamacaoRepository
 {
     private readonly ApplicationDbContext _context;
+
+    public IUnitOfWork UnitOfWork => _context;
 
     public ApoioReclamacaoRepository(ApplicationDbContext context)
     {
@@ -28,16 +31,12 @@ public class ApoioReclamacaoRepository : IApoioReclamacaoRepository
     public async Task CriarAsync(ApoioReclamacao apoio)
     {
         _context.ApoioReclamacoes.Add(apoio);
-        await _context.SaveChangesAsync();
+        
     }
 
-    public async Task RemoverAsync(int usuarioId, int reclamacaoId)
+    public async Task RemoverAsync(ApoioReclamacao apoio)
     {
-        var apoio = await BuscarAsync(usuarioId, reclamacaoId);
-        if (apoio != null)
-        {
-            _context.ApoioReclamacoes.Remove(apoio);
-            await _context.SaveChangesAsync();
-        }
+        _context.ApoioReclamacoes.Remove(apoio);
+       
     }
 }

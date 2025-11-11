@@ -30,6 +30,9 @@ namespace ReColhe.API.Migrations
                     b.Property<int>("ReclamacaoId")
                         .HasColumnType("int");
 
+                    b.Property<int>("ApoioReclamacaoId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("DataApoio")
                         .HasColumnType("datetime(6)");
 

@@ -12,7 +12,7 @@ using ReColhe.API.Infrastructure;
 namespace ReColhe.API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20251111171248_ReclamacaoENotificacao")]
+    [Migration("20251111220658_ReclamacaoENotificacao")]
     partial class ReclamacaoENotificacao
     {
         /// <inheritdoc />
@@ -31,6 +31,9 @@ namespace ReColhe.API.Migrations
                         .HasColumnType("int");
 
                     b.Property<int>("ReclamacaoId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ApoioReclamacaoId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("DataApoio")

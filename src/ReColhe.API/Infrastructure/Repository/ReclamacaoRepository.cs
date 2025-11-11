@@ -1,11 +1,16 @@
 ﻿using ReColhe.API.Infrastructure;
 using ReColhe.Domain.Entidades;
 using Microsoft.EntityFrameworkCore;
+using ReColhe.Domain.Repository;
+using ReColhe.Domain;
+
 namespace ReColhe.Domain.Repository
 {
     public class ReclamacaoRepository : IReclamacaoRepository
     {
         private readonly ApplicationDbContext _context;
+
+        public IUnitOfWork UnitOfWork => _context;
 
         public ReclamacaoRepository(ApplicationDbContext context)
         {
@@ -24,24 +29,17 @@ namespace ReColhe.Domain.Repository
 
         public async Task CriarAsync(Reclamacao reclamacao)
         {
-            _context.Reclamacoes.Add(reclamacao);
-            await _context.SaveChangesAsync();
+            _context.Reclamacoes.Add(reclamacao);        
         }
 
         public async Task EditarAsync(Reclamacao reclamacao)
         {
-            _context.Reclamacoes.Update(reclamacao);
-            await _context.SaveChangesAsync();
+            _context.Reclamacoes.Update(reclamacao);         
         }
 
-        public async Task ExcluirAsync(int id)
+        public async Task ExcluirAsync(Reclamacao reclamacao)
         {
-            var reclamacao = await _context.Reclamacoes.FindAsync(id);
-            if (reclamacao != null)
-            {
-                _context.Reclamacoes.Remove(reclamacao);
-                await _context.SaveChangesAsync();
-            }
+            _context.Reclamacoes.Remove(reclamacao);            
         }
     }
 }

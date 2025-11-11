@@ -18,6 +18,7 @@ namespace ReColhe.API.Migrations
                 {
                     UsuarioId = table.Column<int>(type: "int", nullable: false),
                     ReclamacaoId = table.Column<int>(type: "int", nullable: false),
+                    ApoioReclamacaoId = table.Column<int>(type: "int", nullable: false),
                     DataApoio = table.Column<DateTime>(type: "datetime(6)", nullable: false)
                 },
                 constraints: table =>
