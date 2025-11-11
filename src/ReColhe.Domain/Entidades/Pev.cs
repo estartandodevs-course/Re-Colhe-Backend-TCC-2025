@@ -3,9 +3,6 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ReColhe.Domain.Entidades
 {
-    /// <summary>
-    /// Representa a entidade Pev (Ponto de Entrega Voluntária) no banco de dados.
-    /// </summary>
     public class Pev
     {
         [Key]
@@ -34,7 +31,6 @@ namespace ReColhe.Domain.Entidades
         [Column(TypeName = "decimal(11, 8)")]
         public decimal Longitude { get; set; }
 
-        // Relação de Pev para a tabela de junção
         public virtual ICollection<UsuarioPevFavorito> UsuariosFavoritos { get; set; } = new List<UsuarioPevFavorito>();
     }
 }

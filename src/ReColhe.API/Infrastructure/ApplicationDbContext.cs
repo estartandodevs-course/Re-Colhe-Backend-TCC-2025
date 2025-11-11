@@ -15,6 +15,11 @@ public class ApplicationDbContext : DbContext, IUnitOfWork
     public DbSet<TipoUsuario> TiposUsuario { get; set; }
     public DbSet<UsuarioPevFavorito> UsuarioPevFavoritos { get; set; }
     public DbSet<Pev> Pevs { get; set; }
+    public DbSet<Reclamacao> Reclamacoes { get; set; }
+    public DbSet<ApoioReclamacao> ApoioReclamacoes { get; set; }
+    public DbSet<Notificacao> Notificacoes { get; set; }
+    public DbSet<UsuarioNotificacao> UsuarioNotificacoes { get; set; }
+    public DbSet<Categoria> Categorias { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -32,6 +37,8 @@ public class ApplicationDbContext : DbContext, IUnitOfWork
             .WithMany(p => p.UsuariosFavoritos)
             .HasForeignKey(upf => upf.PevId)
             .OnDelete(DeleteBehavior.Cascade);
+        modelBuilder.Entity<ApoioReclamacao>()
+            .HasKey(ar => new { ar.UsuarioId, ar.ReclamacaoId });
     }
 
     public async Task<int> CommitAsync(CancellationToken cancellationToken = default)

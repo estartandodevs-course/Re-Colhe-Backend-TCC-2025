@@ -5,6 +5,7 @@ using ReColhe.API.Infrastructure.Repository;
 using ReColhe.Application.Usuarios.Criar;
 using ReColhe.Domain.Repository;
 using ReColhe.ServiceDefaults;
+using ReColhe.Application.Reclamacoes.Listar;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.AddServiceDefaults();
@@ -36,12 +37,18 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
             errorNumbersToAdd: null);
     });
 });
+builder.Services.AddScoped<IReclamacaoRepository, ReclamacaoRepository>();
+builder.Services.AddScoped<INotificacaoRepository, NotificacaoRepository>();
+builder.Services.AddScoped<IApoioReclamacaoRepository, ApoioReclamacaoRepository>();
+builder.Services.AddScoped<ICategoriaRepository, CategoriaRepository>();
+builder.Services.AddScoped<IUsuarioNotificacaoRepository, UsuarioNotificacaoRepository>();
 
 // Add Controllers
 builder.Services.AddControllers();
 
-builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(
-    typeof(CriarUsuarioCommand).Assembly
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(
+    typeof(CriarUsuarioCommand).Assembly,
+    typeof(ListarReclamacoesQuery).Assembly
 ));
 
 
