@@ -36,6 +36,10 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
             errorNumbersToAdd: null);
     });
 });
+builder.Services.AddScoped<IReclamacaoRepository, ReclamacaoRepository>();
+builder.Services.AddScoped<INotificacaoRepository, NotificacaoRepository>();
+builder.Services.AddScoped<IApoioReclamacaoRepository, ApoioReclamacaoRepository>();
+builder.Services.AddScoped<ICategoriaRepository, CategoriaRepository>();
 
 // Add Controllers
 builder.Services.AddControllers();
