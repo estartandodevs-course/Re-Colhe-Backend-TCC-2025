@@ -1,8 +1,9 @@
-﻿using MediatR;
-using ReColhe.Application.Mediator;
-using ReColhe.Application.Pev.Editar;
+﻿using ReColhe.Application.Mediator;
 using ReColhe.Domain.Repository;
+using MediatR;
 using System.Net;
+using System;
+using System.Linq;
 
 namespace ReColhe.Application.Pev.Editar
 {
@@ -29,18 +30,21 @@ namespace ReColhe.Application.Pev.Editar
                 if (pevExistente == null)
                 {
                     return CommandResponse<Unit>.AdicionarErro(
-                                            "PEV não encontrado.",
-                                            HttpStatusCode.NotFound
-                                        );
+                        "PEV não encontrado.",
+                        HttpStatusCode.NotFound
+                    );
                 }
+
+                var materiaisParaDb = string.Join(", ", request.Materiais);
 
                 pevExistente.Nome = request.Nome;
                 pevExistente.Endereco = request.Endereco;
                 pevExistente.Telefone = request.Telefone;
                 pevExistente.HorarioFuncionamento = request.HorarioFuncionamento;
-                pevExistente.Materiais = request.Materiais;
-                pevExistente.Latitude = request.Latitude;
-                pevExistente.Longitude = request.Longitude;
+
+                pevExistente.Materiais = materiaisParaDb;
+                pevExistente.Latitude = request.Posicao[0];
+                pevExistente.Longitude = request.Posicao[1];
 
                 await _pevRepository.UpdateAsync(pevExistente);
                 await _pevRepository.UnitOfWork.CommitAsync(cancellationToken);

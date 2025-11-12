@@ -1,8 +1,9 @@
-﻿using MediatR;
-using ReColhe.Application.Mediator;
+﻿using ReColhe.Application.Mediator;
 using ReColhe.Domain.Entidades;
 using ReColhe.Domain.Repository;
+using MediatR;
 using System.Net;
+using System;
 
 namespace ReColhe.Application.Pev.Favoritar
 {
@@ -21,14 +22,14 @@ namespace ReColhe.Application.Pev.Favoritar
         {
             try
             {
-                //Validar se o Usuário existe
+                // Validar se o Usuário existe
                 var usuario = await _usuarioRepository.ObterPorIdAsync(request.UsuarioId);
                 if (usuario == null)
                 {
                     return CommandResponse<Unit>.AdicionarErro("Usuário não encontrado.", HttpStatusCode.NotFound);
                 }
 
-                // Validar se o PEV existe
+                //  Validar se o PEV existe
                 var pev = await _pevRepository.GetByIdAsync(request.PevId);
                 if (pev == null)
                 {
@@ -39,10 +40,10 @@ namespace ReColhe.Application.Pev.Favoritar
                 var favoritoExistente = await _usuarioRepository.ObterFavoritoAsync(request.UsuarioId, request.PevId);
                 if (favoritoExistente != null)
                 {
-                    return CommandResponse<Unit>.Sucesso(Unit.Value, HttpStatusCode.OK);
+                    return CommandResponse<Unit>.Sucesso(Unit.Value, HttpStatusCode.OK); 
                 }
 
-                //  Criar a entidade de junção
+                // Criar a entidade de junção
                 var novoFavorito = new UsuarioPevFavorito
                 {
                     UsuarioId = request.UsuarioId,
@@ -50,11 +51,11 @@ namespace ReColhe.Application.Pev.Favoritar
                     DataAdicao = DateTime.UtcNow
                 };
 
-                //  Adicionar e Salvar
+                // Adicionar e Salvar
                 await _usuarioRepository.AdicionarFavorito(novoFavorito);
                 await _usuarioRepository.UnitOfWork.CommitAsync(cancellationToken);
 
-                return CommandResponse<Unit>.Sucesso(Unit.Value, HttpStatusCode.Created);
+                return CommandResponse<Unit>.Sucesso(Unit.Value, HttpStatusCode.NoContent);
             }
             catch (Exception ex)
             {

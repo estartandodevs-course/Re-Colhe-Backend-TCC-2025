@@ -2,41 +2,43 @@
 using ReColhe.Domain.Entidades;
 using ReColhe.Domain.Repository;
 using ReColhe.API.Infrastructure;
-using ReColhe.Domain;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
-public class ApoioReclamacaoRepository : IApoioReclamacaoRepository
+namespace ReColhe.API.Infrastructure.Repository
 {
-    private readonly ApplicationDbContext _context;
-
-    public IUnitOfWork UnitOfWork => _context;
-
-    public ApoioReclamacaoRepository(ApplicationDbContext context)
+    public class ApoioReclamacaoRepository : IApoioReclamacaoRepository
     {
-        _context = context;
-    }
+        private readonly ApplicationDbContext _context;
+        public IUnitOfWork UnitOfWork => _context;
 
-    public async Task<IEnumerable<ApoioReclamacao>> ListarPorReclamacaoAsync(int reclamacaoId)
-    {
-        return await _context.ApoioReclamacoes
-            .Where(a => a.ReclamacaoId == reclamacaoId)
-            .ToListAsync();
-    }
+        public ApoioReclamacaoRepository(ApplicationDbContext context)
+        {
+            _context = context;
+        }
 
-    public async Task<ApoioReclamacao> BuscarAsync(int usuarioId, int reclamacaoId)
-    {
-        return await _context.ApoioReclamacoes
-            .FirstOrDefaultAsync(a => a.UsuarioId == usuarioId && a.ReclamacaoId == reclamacaoId);
-    }
+        public async Task<IEnumerable<ApoioReclamacao>> ListarPorReclamacaoAsync(int reclamacaoId)
+        {
+            return await _context.ApoioReclamacoes
+                .Where(a => a.ReclamacaoId == reclamacaoId)
+                .ToListAsync();
+        }
 
-    public async Task CriarAsync(ApoioReclamacao apoio)
-    {
-        _context.ApoioReclamacoes.Add(apoio);
-        
-    }
+        public async Task<ApoioReclamacao> BuscarAsync(int usuarioId, int reclamacaoId)
+        {
+            return await _context.ApoioReclamacoes
+                .FirstOrDefaultAsync(a => a.UsuarioId == usuarioId && a.ReclamacaoId == reclamacaoId);
+        }
 
-    public async Task RemoverAsync(ApoioReclamacao apoio)
-    {
-        _context.ApoioReclamacoes.Remove(apoio);
-       
+        public async Task CriarAsync(ApoioReclamacao apoio)
+        {
+            _context.ApoioReclamacoes.Add(apoio);
+        }
+
+        public async Task RemoverAsync(ApoioReclamacao apoio)
+        {
+            _context.ApoioReclamacoes.Remove(apoio);
+        }
     }
 }

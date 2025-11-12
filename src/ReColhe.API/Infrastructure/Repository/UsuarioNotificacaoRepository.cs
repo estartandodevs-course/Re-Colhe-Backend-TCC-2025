@@ -1,29 +1,29 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using ReColhe.API.Infrastructure;
-using ReColhe.Domain;
 using ReColhe.Domain.Entidades;
 using ReColhe.Domain.Repository;
+using ReColhe.API.Infrastructure;
 using System.Threading.Tasks;
 
-public class UsuarioNotificacaoRepository : IUsuarioNotificacaoRepository
+namespace ReColhe.API.Infrastructure.Repository
 {
-    private readonly ApplicationDbContext _context;
-
-    public IUnitOfWork UnitOfWork => _context;
-
-    public UsuarioNotificacaoRepository(ApplicationDbContext context)
+    public class UsuarioNotificacaoRepository : IUsuarioNotificacaoRepository
     {
-        _context = context;
-    }
+        private readonly ApplicationDbContext _context;
+        public IUnitOfWork UnitOfWork => _context;
 
-    public async Task<UsuarioNotificacao> BuscarPorUsuarioENotificacaoAsync(int usuarioId, int notificacaoId)
-    {
-        return await _context.UsuarioNotificacoes
-            .FirstOrDefaultAsync(un => un.UsuarioId == usuarioId && un.NotificacaoId == notificacaoId);
-    }
+        public UsuarioNotificacaoRepository(ApplicationDbContext context)
+        {
+            _context = context;
+        }
 
-    public async Task AtualizarAsync(UsuarioNotificacao usuarioNotificacao)
-    {
-        _context.UsuarioNotificacoes.Update(usuarioNotificacao);    
+        public async Task<UsuarioNotificacao> BuscarPorUsuarioENotificacaoAsync(int usuarioId, int notificacaoId)
+        {
+            return await _context.UsuarioNotificacoes.FirstOrDefaultAsync(un => un.UsuarioId == usuarioId && un.NotificacaoId == notificacaoId);
+        }
+
+        public async Task AtualizarAsync(UsuarioNotificacao usuarioNotificacao)
+        {
+            _context.UsuarioNotificacoes.Update(usuarioNotificacao);
+        }
     }
 }

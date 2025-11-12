@@ -1,4 +1,6 @@
-﻿namespace ReColhe.Application.Usuarios.Obter
+﻿using ReColhe.Application.Common.Dtos;
+
+namespace ReColhe.Application.Usuarios.Obter
 {
     public class ObterUsuarioPorIdResponse
     {
@@ -8,6 +10,7 @@
         public int TipoUsuarioId { get; set; }
         public int? EmpresaId { get; set; }
         public string EmpresaNome { get; set; } = string.Empty;
+        public List<PevSimplesResponse> PevsFavoritos { get; set; } = new List<PevSimplesResponse>();
     }
 
     public class UsuarioDetalhadoResponse

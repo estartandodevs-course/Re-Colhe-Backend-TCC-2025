@@ -109,9 +109,6 @@ namespace ReColhe.API.Controllers
         /// Adiciona um PEV aos favoritos de um usuário.
         /// Rota: POST /api/v1/pevs/{pevId}/favoritar
         /// </summary>
-        /// <remarks>
-        /// No corpo da requisição, envie o ID do usuário: { "usuarioId": 1 }
-        /// </remarks>
         [HttpPost("{pevId}/favoritar")]
         public async Task<IActionResult> FavoritarPev([FromRoute] int pevId, [FromBody] AdicionarFavoritoCommand command)
         {
