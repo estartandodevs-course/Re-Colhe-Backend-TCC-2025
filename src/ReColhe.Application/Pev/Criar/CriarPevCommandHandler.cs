@@ -1,7 +1,10 @@
-﻿using MediatR;
-using ReColhe.Application.Mediator;
+﻿using ReColhe.Application.Mediator;
+using ReColhe.Domain.Entidades;
 using ReColhe.Domain.Repository;
+using MediatR;
 using System.Net;
+using System;
+using System.Linq;
 
 namespace ReColhe.Application.Pev.Criar
 {
@@ -23,6 +26,7 @@ namespace ReColhe.Application.Pev.Criar
 
             try
             {
+                var materiaisParaDb = string.Join(", ", request.Materiais);
 
                 var pev = new ReColhe.Domain.Entidades.Pev
                 {
@@ -30,9 +34,10 @@ namespace ReColhe.Application.Pev.Criar
                     Endereco = request.Endereco,
                     Telefone = request.Telefone,
                     HorarioFuncionamento = request.HorarioFuncionamento,
-                    Materiais = request.Materiais,
-                    Latitude = request.Latitude,
-                    Longitude = request.Longitude
+
+                    Materiais = materiaisParaDb,
+                    Latitude = request.Posicao[0], // Pega o primeiro item (lat)
+                    Longitude = request.Posicao[1] // Pega o segundo item (lng)
                 };
 
                 await _pevRepository.AddAsync(pev);

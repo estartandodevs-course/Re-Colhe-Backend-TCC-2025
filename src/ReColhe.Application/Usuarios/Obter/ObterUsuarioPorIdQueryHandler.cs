@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using ReColhe.Application.Common.Dtos;
 using ReColhe.Application.Mediator;
 using ReColhe.Domain.Repository;
 using System.Net;
@@ -35,7 +36,13 @@ namespace ReColhe.Application.Usuarios.Obter
                     Email = usuario.Email,
                     TipoUsuarioId = usuario.TipoUsuarioId,
                     EmpresaId = usuario.EmpresaId,
-                    EmpresaNome = usuario.Empresa?.NomeFantasia ?? string.Empty
+                    EmpresaNome = usuario.Empresa?.NomeFantasia ?? string.Empty,
+                    PevsFavoritos = usuario.PevFavoritos.Select(pf => new PevSimplesResponse
+                    {
+                        PevId = pf.Pev.PevId,
+                        Nome = pf.Pev.Nome,
+                        Endereco = pf.Pev.Endereco
+                    }).ToList()
                 };
 
                 return CommandResponse<ObterUsuarioPorIdResponse>.Sucesso(response);

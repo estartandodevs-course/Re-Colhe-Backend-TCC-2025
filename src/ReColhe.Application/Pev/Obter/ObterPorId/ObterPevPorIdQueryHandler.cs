@@ -2,6 +2,9 @@
 using ReColhe.Application.Mediator;
 using ReColhe.Application.Pev.Obter.ObterPorId;
 using ReColhe.Domain.Repository;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 
 namespace ReColhe.Application.Pev.Obter
@@ -23,7 +26,6 @@ namespace ReColhe.Application.Pev.Obter
 
                 if (pev == null)
                 {
-
                     return CommandResponse<ObterPevPorIdResponse>.AdicionarErro(
                         "PEV não encontrado.",
                         HttpStatusCode.NotFound
@@ -37,9 +39,12 @@ namespace ReColhe.Application.Pev.Obter
                     Endereco = pev.Endereco,
                     Telefone = pev.Telefone,
                     HorarioFuncionamento = pev.HorarioFuncionamento,
-                    Materiais = pev.Materiais,
-                    Latitude = pev.Latitude,
-                    Longitude = pev.Longitude
+
+                    Materiais = pev.Materiais.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+                                           .Select(m => m.Trim())
+                                           .ToList(),
+
+                    Posicao = new List<decimal> { pev.Latitude, pev.Longitude }
                 };
 
                 return CommandResponse<ObterPevPorIdResponse>.Sucesso(response);

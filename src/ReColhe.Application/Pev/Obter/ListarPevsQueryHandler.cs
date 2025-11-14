@@ -1,6 +1,9 @@
 ﻿using ReColhe.Application.Mediator;
 using ReColhe.Domain.Repository;
 using MediatR;
+using System.Linq;
+using System;
+using System.Collections.Generic;
 
 namespace ReColhe.Application.Pev.Obter
 {
@@ -19,16 +22,17 @@ namespace ReColhe.Application.Pev.Obter
             {
                 var pevs = await _pevRepository.GetAllAsync();
 
-                // Mapeia a Entidade (Pev) para o DTO (PevResponseItem)
                 var pevsResponse = pevs.Select(p => new PevResponseItem
                 {
                     PevId = p.PevId,
                     Nome = p.Nome,
                     Endereco = p.Endereco,
                     Telefone = p.Telefone,
-                    Materiais = p.Materiais,
-                    Latitude = p.Latitude,
-                    Longitude = p.Longitude
+                    Materiais = p.Materiais.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+                                           .Select(m => m.Trim())
+                                           .ToList(),
+
+                    Posicao = new List<decimal> { p.Latitude, p.Longitude }
                 });
 
                 var response = new ListarPevsResponse { Pevs = pevsResponse };

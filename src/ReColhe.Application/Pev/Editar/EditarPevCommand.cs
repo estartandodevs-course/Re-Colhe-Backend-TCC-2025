@@ -1,9 +1,10 @@
-﻿using FluentValidation;
+﻿using ReColhe.Application.Mediator;
+using FluentValidation;
 using FluentValidation.Results;
 using MediatR;
-using ReColhe.Application.Mediator;
 using System.Net;
 using System.Text.Json.Serialization;
+using System.Collections.Generic;
 
 namespace ReColhe.Application.Pev.Editar
 {
@@ -16,12 +17,9 @@ namespace ReColhe.Application.Pev.Editar
         public string Endereco { get; set; } = string.Empty;
         public string Telefone { get; set; } = string.Empty;
         public string HorarioFuncionamento { get; set; } = string.Empty;
-        public string Materiais { get; set; } = string.Empty;
-        public decimal Latitude { get; set; }
-        public decimal Longitude { get; set; }
-
+        public List<string> Materiais { get; set; } = new List<string>();
+        public List<decimal> Posicao { get; set; } = new List<decimal>();
         public ValidationResult? ResultadoDasValidacoes { get; private set; }
-
         public bool Validar()
         {
             var validacoes = new InlineValidator<EditarPevCommand>();
@@ -36,6 +34,11 @@ namespace ReColhe.Application.Pev.Editar
                .WithErrorCode(((int)HttpStatusCode.BadRequest).ToString())
                .WithMessage("O nome do PEV deve ser informado.");
 
+            validacoes.RuleFor(pev => pev.Posicao)
+                .NotNull()
+                .Must(p => p.Count == 2)
+                .WithErrorCode(((int)HttpStatusCode.BadRequest).ToString())
+                .WithMessage("O campo 'posicao' deve conter exatamente 2 valores (latitude e longitude).");
 
             ResultadoDasValidacoes = validacoes.Validate(this);
             return ResultadoDasValidacoes.IsValid;

@@ -39,6 +39,20 @@ public class ApplicationDbContext : DbContext, IUnitOfWork
             .OnDelete(DeleteBehavior.Cascade);
         modelBuilder.Entity<ApoioReclamacao>()
             .HasKey(ar => new { ar.UsuarioId, ar.ReclamacaoId });
+        modelBuilder.Entity<TipoUsuario>().HasData(
+            new TipoUsuario { TipoUsuarioId = 1, Nome = "Comum" },
+            new TipoUsuario { TipoUsuarioId = 2, Nome = "Colaborador" }
+        );
+        modelBuilder.Entity<Empresa>().HasData(
+             new Empresa
+             {
+                 EmpresaId = 1,
+                 NomeFantasia = "Empresa Teste",
+                 Cnpj = "00.000.000/0001-00",
+                 EmailContato = "contato@empresa.com",
+                 TelefoneContato = "99999-9999"
+             }
+         );
     }
 
     public async Task<int> CommitAsync(CancellationToken cancellationToken = default)

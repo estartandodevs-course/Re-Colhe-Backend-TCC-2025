@@ -20,6 +20,8 @@ namespace ReColhe.API.Infrastructure.Repository
             return await _context.Usuarios
                 .Include(u => u.TipoUsuario)
                 .Include(u => u.Empresa)
+                .Include(u => u.PevFavoritos)
+                .ThenInclude(pf => pf.Pev)
                 .FirstOrDefaultAsync(u => u.UsuarioId == id);
         }
 
@@ -76,7 +78,7 @@ namespace ReColhe.API.Infrastructure.Repository
         {
             return await _context.Usuarios
                 .Include(u => u.TipoUsuario)  // Inclui o TipoUsuario
-                .AsNoTracking()               // Apenas leitura - melhor performance
+                .AsNoTracking()               // Apenas leitura
                 .ToListAsync();
         }
 

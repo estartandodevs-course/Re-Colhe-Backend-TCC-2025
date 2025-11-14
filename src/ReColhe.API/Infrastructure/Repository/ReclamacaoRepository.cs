@@ -2,14 +2,14 @@
 using ReColhe.Domain.Entidades;
 using Microsoft.EntityFrameworkCore;
 using ReColhe.Domain.Repository;
-using ReColhe.Domain;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
-namespace ReColhe.Domain.Repository
+namespace ReColhe.API.Infrastructure.Repository
 {
     public class ReclamacaoRepository : IReclamacaoRepository
     {
         private readonly ApplicationDbContext _context;
-
         public IUnitOfWork UnitOfWork => _context;
 
         public ReclamacaoRepository(ApplicationDbContext context)
@@ -29,17 +29,17 @@ namespace ReColhe.Domain.Repository
 
         public async Task CriarAsync(Reclamacao reclamacao)
         {
-            _context.Reclamacoes.Add(reclamacao);        
+            _context.Reclamacoes.Add(reclamacao);
         }
 
         public async Task EditarAsync(Reclamacao reclamacao)
         {
-            _context.Reclamacoes.Update(reclamacao);         
+            _context.Reclamacoes.Update(reclamacao);
         }
 
         public async Task ExcluirAsync(Reclamacao reclamacao)
         {
-            _context.Reclamacoes.Remove(reclamacao);            
+            _context.Reclamacoes.Remove(reclamacao);
         }
     }
 }

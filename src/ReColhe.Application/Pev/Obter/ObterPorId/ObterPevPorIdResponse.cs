@@ -1,4 +1,6 @@
-﻿namespace ReColhe.Application.Pev.Obter
+﻿using System.Collections.Generic;
+
+namespace ReColhe.Application.Pev.Obter
 {
     public class ObterPevPorIdResponse
     {
@@ -7,8 +9,8 @@
         public string Endereco { get; set; } = string.Empty;
         public string Telefone { get; set; } = string.Empty;
         public string HorarioFuncionamento { get; set; } = string.Empty;
-        public string Materiais { get; set; } = string.Empty;
-        public decimal Latitude { get; set; }
-        public decimal Longitude { get; set; }
+
+        public List<string> Materiais { get; set; } = new List<string>();
+        public List<decimal> Posicao { get; set; } = new List<decimal>();
     }
 }

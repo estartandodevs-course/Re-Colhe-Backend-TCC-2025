@@ -1,8 +1,9 @@
-﻿using FluentValidation;
+﻿using ReColhe.Application.Mediator;
+using FluentValidation;
 using FluentValidation.Results;
 using MediatR;
-using ReColhe.Application.Mediator;
 using System.Net;
+using System.Collections.Generic;
 
 namespace ReColhe.Application.Pev.Criar
 {
@@ -12,9 +13,8 @@ namespace ReColhe.Application.Pev.Criar
         public string Endereco { get; set; } = string.Empty;
         public string Telefone { get; set; } = string.Empty;
         public string HorarioFuncionamento { get; set; } = string.Empty;
-        public string Materiais { get; set; } = string.Empty;
-        public decimal Latitude { get; set; }
-        public decimal Longitude { get; set; }
+        public List<string> Materiais { get; set; } = new List<string>();
+        public List<decimal> Posicao { get; set; } = new List<decimal>();
 
         public ValidationResult? ResultadoDasValidacoes { get; private set; }
 
@@ -32,15 +32,11 @@ namespace ReColhe.Application.Pev.Criar
                 .WithErrorCode(((int)HttpStatusCode.BadRequest).ToString())
                 .WithMessage("O endereço deve ser informado.");
 
-            validacoes.RuleFor(pev => pev.Latitude)
-                .InclusiveBetween(-90, 90)
+            validacoes.RuleFor(pev => pev.Posicao)
+                .NotNull()
+                .Must(p => p.Count == 2)
                 .WithErrorCode(((int)HttpStatusCode.BadRequest).ToString())
-                .WithMessage("Latitude inválida.");
-
-            validacoes.RuleFor(pev => pev.Longitude)
-                .InclusiveBetween(-180, 180)
-                .WithErrorCode(((int)HttpStatusCode.BadRequest).ToString())
-                .WithMessage("Longitude inválida.");
+                .WithMessage("O campo 'posicao' deve conter exatamente 2 valores (latitude e longitude).");
 
             ResultadoDasValidacoes = validacoes.Validate(this);
             return ResultadoDasValidacoes.IsValid;

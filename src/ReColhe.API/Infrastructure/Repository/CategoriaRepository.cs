@@ -2,45 +2,49 @@
 using ReColhe.Domain.Entidades;
 using ReColhe.Domain.Repository;
 using ReColhe.API.Infrastructure;
-using ReColhe.Domain;
-public class CategoriaRepository : ICategoriaRepository
+using System.Collections.Generic;
+using System.Threading.Tasks;
+
+namespace ReColhe.API.Infrastructure.Repository
 {
-    private readonly ApplicationDbContext _context;
-
-    public IUnitOfWork UnitOfWork => _context;
-
-    public CategoriaRepository(ApplicationDbContext context)
+    public class CategoriaRepository : ICategoriaRepository
     {
-        _context = context;
-    }
+        private readonly ApplicationDbContext _context;
+        public IUnitOfWork UnitOfWork => _context;
 
-    public async Task<IEnumerable<Categoria>> ListarAsync()
-    {
-        return await _context.Categorias.ToListAsync();
-    }
+        public CategoriaRepository(ApplicationDbContext context)
+        {
+            _context = context;
+        }
 
-    public async Task<Categoria> BuscarPorIdAsync(int categoriaId)
-    {
-        return await _context.Categorias.FindAsync(categoriaId);
-    }
+        public async Task<IEnumerable<Categoria>> ListarAsync()
+        {
+            return await _context.Categorias.ToListAsync();
+        }
 
-    public async Task CriarAsync(Categoria categoria)
-    {
-        await _context.Categorias.AddAsync(categoria);
-    }
+        public async Task<Categoria> BuscarPorIdAsync(int categoriaId)
+        {
+            return await _context.Categorias.FindAsync(categoriaId);
+        }
 
-    public async Task AtualizarAsync(Categoria categoria)
-    {
-        _context.Categorias.Update(categoria);
-    }
+        public async Task CriarAsync(Categoria categoria)
+        {
+            _context.Categorias.Add(categoria);
+        }
 
-    public async Task RemoverAsync(Categoria categoria)
-    {
-        _context.Categorias.Remove(categoria);
-    }
+        public async Task AtualizarAsync(Categoria categoria)
+        {
+            _context.Categorias.Update(categoria);
+        }
 
-    public async Task<Categoria> ObterPorIdAsync(int id)
-    {
-        return await _context.Categorias.FindAsync(id);
+        public async Task RemoverAsync(Categoria categoria)
+        {
+            _context.Categorias.Remove(categoria);
+        }
+
+        public async Task<Categoria> ObterPorIdAsync(int id)
+        {
+            return await _context.Categorias.FindAsync(id);
+        }
     }
 }
