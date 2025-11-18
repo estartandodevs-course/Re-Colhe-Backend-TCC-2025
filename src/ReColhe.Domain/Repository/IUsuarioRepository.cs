@@ -17,9 +17,6 @@ namespace ReColhe.Domain.Repository
 
         IUnitOfWork UnitOfWork { get; }
 
-        Task<UsuarioPevFavorito?> ObterFavoritoAsync(int usuarioId, int pevId);
-        Task AdicionarFavorito(UsuarioPevFavorito favorito);
-        Task RemoverFavorito(UsuarioPevFavorito favorito);
     }
 
     public interface IUnitOfWork

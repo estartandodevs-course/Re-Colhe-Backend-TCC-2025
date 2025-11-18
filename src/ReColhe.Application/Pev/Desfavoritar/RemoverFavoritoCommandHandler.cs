@@ -1,25 +1,26 @@
-﻿using MediatR;
-using ReColhe.Application.Mediator;
+﻿using ReColhe.Application.Mediator;
 using ReColhe.Domain.Repository;
+using MediatR;
 using System.Net;
+using System;
 
 namespace ReColhe.Application.Pev.Desfavoritar
 {
     public class RemoverFavoritoCommandHandler : IRequestHandler<RemoverFavoritoCommand, CommandResponse<Unit>>
     {
-        private readonly IUsuarioRepository _usuarioRepository;
+        private readonly IUsuarioPevFavoritoRepository _favoritoRepository;
 
-        public RemoverFavoritoCommandHandler(IUsuarioRepository usuarioRepository)
+        public RemoverFavoritoCommandHandler(IUsuarioPevFavoritoRepository favoritoRepository)
         {
-            _usuarioRepository = usuarioRepository;
+            _favoritoRepository = favoritoRepository;
         }
 
         public async Task<CommandResponse<Unit>> Handle(RemoverFavoritoCommand request, CancellationToken cancellationToken)
         {
             try
             {
-                //Encontrar o favorito
-                var favorito = await _usuarioRepository.ObterFavoritoAsync(request.UsuarioId, request.PevId);
+                //  Encontrar o favorito
+                var favorito = await _favoritoRepository.BuscarAsync(request.UsuarioId, request.PevId);
 
                 if (favorito == null)
                 {
@@ -27,8 +28,8 @@ namespace ReColhe.Application.Pev.Desfavoritar
                 }
 
                 //  Remover e Salvar
-                await _usuarioRepository.RemoverFavorito(favorito);
-                await _usuarioRepository.UnitOfWork.CommitAsync(cancellationToken);
+                await _favoritoRepository.RemoverAsync(favorito);
+                await _favoritoRepository.UnitOfWork.CommitAsync(cancellationToken);
 
                 return CommandResponse<Unit>.Sucesso(Unit.Value, HttpStatusCode.NoContent);
             }

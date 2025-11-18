@@ -24,7 +24,10 @@ public class ApplicationDbContext : DbContext, IUnitOfWork
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
-
+        
+        modelBuilder.Entity<Usuario>()
+        .HasIndex(u => u.Email)
+        .IsUnique();
         modelBuilder.Entity<UsuarioPevFavorito>()
             .HasKey(upf => new { upf.UsuarioId, upf.PevId });
         modelBuilder.Entity<UsuarioPevFavorito>()
