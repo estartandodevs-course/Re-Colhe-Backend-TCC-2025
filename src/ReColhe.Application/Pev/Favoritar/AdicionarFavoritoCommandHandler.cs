@@ -11,18 +11,23 @@ namespace ReColhe.Application.Pev.Favoritar
     {
         private readonly IUsuarioRepository _usuarioRepository;
         private readonly IPevRepository _pevRepository;
+        private readonly IUsuarioPevFavoritoRepository _favoritoRepository;
 
-        public AdicionarFavoritoCommandHandler(IUsuarioRepository usuarioRepository, IPevRepository pevRepository)
+        public AdicionarFavoritoCommandHandler(
+            IUsuarioRepository usuarioRepository,
+            IPevRepository pevRepository,
+            IUsuarioPevFavoritoRepository favoritoRepository)
         {
             _usuarioRepository = usuarioRepository;
             _pevRepository = pevRepository;
+            _favoritoRepository = favoritoRepository;
         }
 
         public async Task<CommandResponse<Unit>> Handle(AdicionarFavoritoCommand request, CancellationToken cancellationToken)
         {
             try
             {
-                // Validar se o Usuário existe
+                //  Validar se o Usuário existe
                 var usuario = await _usuarioRepository.ObterPorIdAsync(request.UsuarioId);
                 if (usuario == null)
                 {
@@ -37,10 +42,10 @@ namespace ReColhe.Application.Pev.Favoritar
                 }
 
                 // Validar se o favorito já não existe
-                var favoritoExistente = await _usuarioRepository.ObterFavoritoAsync(request.UsuarioId, request.PevId);
+                var favoritoExistente = await _favoritoRepository.BuscarAsync(request.UsuarioId, request.PevId);
                 if (favoritoExistente != null)
                 {
-                    return CommandResponse<Unit>.Sucesso(Unit.Value, HttpStatusCode.OK); 
+                    return CommandResponse<Unit>.Sucesso(Unit.Value, HttpStatusCode.OK);
                 }
 
                 // Criar a entidade de junção
@@ -51,9 +56,9 @@ namespace ReColhe.Application.Pev.Favoritar
                     DataAdicao = DateTime.UtcNow
                 };
 
-                // Adicionar e Salvar
-                await _usuarioRepository.AdicionarFavorito(novoFavorito);
-                await _usuarioRepository.UnitOfWork.CommitAsync(cancellationToken);
+                // Adicionar 
+                await _favoritoRepository.CriarAsync(novoFavorito);
+                await _favoritoRepository.UnitOfWork.CommitAsync(cancellationToken);
 
                 return CommandResponse<Unit>.Sucesso(Unit.Value, HttpStatusCode.NoContent);
             }

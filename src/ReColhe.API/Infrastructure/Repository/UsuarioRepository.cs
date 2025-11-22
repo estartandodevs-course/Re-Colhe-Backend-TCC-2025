@@ -57,23 +57,6 @@ namespace ReColhe.API.Infrastructure.Repository
             return await _context.CommitAsync(cancellationToken);
         }
 
-
-        public async Task<UsuarioPevFavorito?> ObterFavoritoAsync(int usuarioId, int pevId)
-        {
-            return await _context.UsuarioPevFavoritos
-                .FirstOrDefaultAsync(f => f.UsuarioId == usuarioId && f.PevId == pevId);
-        }
-
-        public async Task AdicionarFavorito(UsuarioPevFavorito favorito)
-        {
-            await _context.UsuarioPevFavoritos.AddAsync(favorito);
-        }
-
-        public Task RemoverFavorito(UsuarioPevFavorito favorito)
-        {
-            _context.UsuarioPevFavoritos.Remove(favorito);
-            return Task.CompletedTask;
-        }
         public async Task<IEnumerable<Usuario>> ObterTodosComTipoUsuarioAsync()
         {
             return await _context.Usuarios
