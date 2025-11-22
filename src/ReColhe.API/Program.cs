@@ -1,16 +1,29 @@
-using Amazon.Lambda.AspNetCoreServer.Hosting;
-using ReColhe.API.Infrastructure;
-using ReColhe.ServiceDefaults;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.EntityFrameworkCore;
-using Pomelo.EntityFrameworkCore.MySql;
+using ReColhe.API.Infrastructure;
+using ReColhe.API.Infrastructure.Repository;
+using ReColhe.Application.Usuarios.Criar;
+using ReColhe.Domain.Repository;
+using ReColhe.ServiceDefaults;
+using ReColhe.Application.Reclamacoes.Listar;
 
+using ReColhe.Application.Common.Interfaces;
+using ReColhe.API.Infrastructure.Auth;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using ReColhe.Application.Auth.Login;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.AddServiceDefaults();
 
 // Add Lambda hosting
 builder.Services.AddAWSLambdaHosting(LambdaEventSource.HttpApi);
+
+
+builder.Services.AddScoped<IPevRepository, PevRepository>();
+builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
+
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 if (string.IsNullOrEmpty(connectionString))
@@ -31,11 +44,51 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
             errorNumbersToAdd: null);
     });
 });
+builder.Services.AddScoped<IReclamacaoRepository, ReclamacaoRepository>();
+builder.Services.AddScoped<INotificacaoRepository, NotificacaoRepository>();
+builder.Services.AddScoped<IApoioReclamacaoRepository, ApoioReclamacaoRepository>();
+builder.Services.AddScoped<ICategoriaRepository, CategoriaRepository>();
+builder.Services.AddScoped<IUsuarioNotificacaoRepository, UsuarioNotificacaoRepository>();
+builder.Services.AddScoped<IUsuarioPevFavoritoRepository, UsuarioPevFavoritoRepository>();
+builder.Services.AddScoped<ITokenService, TokenService>();
 
 // Add Controllers
 builder.Services.AddControllers();
 
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(
+    typeof(CriarUsuarioCommand).Assembly,
+    typeof(ListarReclamacoesQuery).Assembly,
+    typeof(LoginCommand).Assembly
+));
+
+var jwtKey = builder.Configuration["Jwt:Key"];
+var jwtIssuer = builder.Configuration["Jwt:Issuer"];
+var jwtAudience = builder.Configuration["Jwt:Audience"];
+
+if (string.IsNullOrEmpty(jwtKey) || jwtKey.Length < 32)
+{
+    throw new InvalidOperationException("A configuração 'Jwt:Key' é inválida. Ela deve existir e ter pelo menos 32 caracteres para ser segura.");
+}
+
 // Add Swagger/OpenAPI
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = jwtIssuer,
+        ValidAudience = jwtAudience,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
+    };
+});
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
@@ -45,7 +98,7 @@ builder.Services.AddSwaggerGen(c =>
         Title = "ReColhe API",
         Description = "AWS Lambda ASP.NET Core API ReColhe",
     });
-    
+
     // Include XML comments
     var xmlFile = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";
     var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
@@ -76,7 +129,7 @@ using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
     var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
-    
+
     try
     {
         if (db.Database.GetPendingMigrations().Any())
@@ -134,7 +187,8 @@ app.MapDefaultEndpoints();
 app.UseCors("AllowAll");
 
 app.UseHttpsRedirection();
-
+app.UseAuthentication();
+app.UseAuthorization();
 // Map Controllers
 app.MapControllers();
 
