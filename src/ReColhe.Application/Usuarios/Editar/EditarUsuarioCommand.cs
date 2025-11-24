@@ -11,6 +11,7 @@ namespace ReColhe.Application.Usuarios.Editar
         public int UsuarioId { get; private set; }
         public string? Nome { get; private set; }
         public string? Email { get; private set; }
+        public string? Cep { get; private set; }
 
         public ValidationResult? ResultadoDasValidacoes { get; private set; }
 
@@ -19,12 +20,12 @@ namespace ReColhe.Application.Usuarios.Editar
         {
         }
 
-        // NOVO CONSTRUTOR para receber parâmetros individuais
-        public EditarUsuarioCommand(int usuarioId, string? nome, string? email)
+        public EditarUsuarioCommand(int usuarioId, string? nome, string? email, string? cep)
         {
             UsuarioId = usuarioId;
             Nome = nome;
             Email = email;
+            Cep = cep;
         }
 
         public bool Validar()
@@ -49,14 +50,28 @@ namespace ReColhe.Application.Usuarios.Editar
                 .WithErrorCode(((int)HttpStatusCode.BadRequest).ToString())
                 .WithMessage("Se informado, o email deve ser válido.");
 
-            // Valida que pelo menos um campo foi fornecido
-            validacoes.RuleFor(usuario => usuario)
-                .Must(usuario => usuario.Nome != null || usuario.Email != null)
+            validacoes.RuleFor(usuario => usuario.Cep)
+                .Must(ValidarCep)
+                .When(usuario => !string.IsNullOrEmpty(usuario.Cep))
                 .WithErrorCode(((int)HttpStatusCode.BadRequest).ToString())
-                .WithMessage("Pelo menos um campo (nome ou email) deve ser informado para edição.");
+                .WithMessage("Se informado, o CEP deve ser válido.");
+
+            validacoes.RuleFor(usuario => usuario)
+                .Must(usuario => usuario.Nome != null || usuario.Email != null || usuario.Cep != null)
+                .WithErrorCode(((int)HttpStatusCode.BadRequest).ToString())
+                .WithMessage("Pelo menos um campo (nome, email ou cep) deve ser informado para edição.");
 
             ResultadoDasValidacoes = validacoes.Validate(this);
             return ResultadoDasValidacoes.IsValid;
+        }
+
+        private bool ValidarCep(string? cep)
+        {
+            if (string.IsNullOrEmpty(cep))
+                return true;
+
+            cep = new string(cep.Where(char.IsDigit).ToArray());
+            return cep.Length == 8;
         }
     }
 }

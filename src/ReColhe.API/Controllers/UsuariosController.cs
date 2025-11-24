@@ -79,9 +79,7 @@ namespace ReColhe.API.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> EditarUsuario(int id, [FromBody] EditarUsuarioCommand command)
         {
-            // Aqui precisaríamos ajustar o command para receber ID da rota
-            // Por enquanto, vamos criar um novo command
-            var commandComId = new EditarUsuarioCommand(id, command.Nome, command.Email);
+            var commandComId = new EditarUsuarioCommand(id, command.Nome, command.Email, command.Cep);
             var response = await _sender.Send(commandComId);
             return HandleCommandResponse(response);
         }
