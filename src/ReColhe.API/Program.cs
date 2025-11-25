@@ -175,18 +175,18 @@ app.UseSwaggerUI(c =>
     c.DisplayRequestDuration();
 });
 
-// if (app.Environment.IsDevelopment())
-// {
-//     app.UseSwagger();
-//     app.UseSwaggerUI(c =>
-//     {
-//         c.SwaggerEndpoint("/swagger/v1/swagger.json", "ReColhe API V1");
-//         c.RoutePrefix = "swagger"; // Swagger UI at /swagger
-//         c.DocumentTitle = "ReColhe API Documentation";
-//         c.DefaultModelsExpandDepth(-1); // Hide schemas by default
-//         c.DisplayRequestDuration(); // Show request duration in Swagger UI
-//     });
-// }
+ if (app.Environment.IsDevelopment())
+ {
+     app.UseSwagger();
+     app.UseSwaggerUI(c =>
+     {
+         c.SwaggerEndpoint("/swagger/v1/swagger.json", "ReColhe API V1");
+         c.RoutePrefix = "swagger"; // Swagger UI at /swagger
+         c.DocumentTitle = "ReColhe API Documentation";
+         c.DefaultModelsExpandDepth(-1); // Hide schemas by default
+         c.DisplayRequestDuration(); // Show request duration in Swagger UI
+     });
+ }
 
 app.MapDefaultEndpoints();
 
