@@ -54,7 +54,8 @@ namespace ReColhe.Application.Usuarios.Criar
                     Email = request.Email,
                     SenhaHash = BCrypt.Net.BCrypt.HashPassword(request.Senha),
                     TipoUsuarioId = request.TipoUsuarioId,
-                    EmpresaId = request.EmpresaId
+                    EmpresaId = request.EmpresaId,
+                    Cep = request.Cep
                 };
 
                 // Salvar o usuario no banco de dados

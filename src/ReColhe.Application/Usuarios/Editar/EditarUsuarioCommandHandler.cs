@@ -45,6 +45,9 @@ namespace ReColhe.Application.Usuarios.Editar
             if (request.Email != null)
                 usuario.Email = request.Email;
 
+            if (request.Cep != null)
+                usuario.Cep = request.Cep;
+
             await _usuarioRepository.UnitOfWork.CommitAsync(cancellationToken);
 
             return CommandResponse<Unit>.Sucesso(Unit.Value, HttpStatusCode.OK);

@@ -13,6 +13,9 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using ReColhe.Application.Auth.Login;
+using ReColhe.Application.Empresas.Criar;
+using ReColhe.Application.Empresas.Listar;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.AddServiceDefaults();
@@ -20,6 +23,7 @@ builder.AddServiceDefaults();
 // Add Lambda hosting
 builder.Services.AddAWSLambdaHosting(LambdaEventSource.HttpApi);
 
+builder.Services.AddScoped<IEmpresaRepository, EmpresaRepository>();
 
 builder.Services.AddScoped<IPevRepository, PevRepository>();
 builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
@@ -58,7 +62,9 @@ builder.Services.AddControllers();
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(
     typeof(CriarUsuarioCommand).Assembly,
     typeof(ListarReclamacoesQuery).Assembly,
-    typeof(LoginCommand).Assembly
+    typeof(LoginCommand).Assembly,
+    typeof(CriarEmpresaCommand).Assembly,
+    typeof(ListarEmpresasQuery).Assembly
 ));
 
 var jwtKey = builder.Configuration["Jwt:Key"];
@@ -161,7 +167,7 @@ app.UseSwagger();
 app.UseSwaggerUI(c =>
 {
     var jsonPath = builder.Configuration["Swagger:JsonPath"];
-    
+
     c.SwaggerEndpoint(jsonPath, "ReColhe API V1");
     c.RoutePrefix = "api/swagger";
     c.DocumentTitle = "ReColhe API Documentation";
@@ -169,18 +175,18 @@ app.UseSwaggerUI(c =>
     c.DisplayRequestDuration();
 });
 
-// if (app.Environment.IsDevelopment())
-// {
-//     app.UseSwagger();
-//     app.UseSwaggerUI(c =>
-//     {
-//         c.SwaggerEndpoint("/swagger/v1/swagger.json", "ReColhe API V1");
-//         c.RoutePrefix = "swagger"; // Swagger UI at /swagger
-//         c.DocumentTitle = "ReColhe API Documentation";
-//         c.DefaultModelsExpandDepth(-1); // Hide schemas by default
-//         c.DisplayRequestDuration(); // Show request duration in Swagger UI
-//     });
-// }
+ if (app.Environment.IsDevelopment())
+ {
+     app.UseSwagger();
+     app.UseSwaggerUI(c =>
+     {
+         c.SwaggerEndpoint("/swagger/v1/swagger.json", "ReColhe API V1");
+         c.RoutePrefix = "swagger"; // Swagger UI at /swagger
+         c.DocumentTitle = "ReColhe API Documentation";
+         c.DefaultModelsExpandDepth(-1); // Hide schemas by default
+         c.DisplayRequestDuration(); // Show request duration in Swagger UI
+     });
+ }
 
 app.MapDefaultEndpoints();
 
@@ -227,4 +233,3 @@ public class GlobalExceptionHandler : IExceptionHandler
         return true;
     }
 }
-

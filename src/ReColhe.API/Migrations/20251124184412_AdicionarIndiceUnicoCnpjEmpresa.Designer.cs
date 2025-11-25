@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ReColhe.API.Infrastructure;
 
@@ -11,9 +12,11 @@ using ReColhe.API.Infrastructure;
 namespace ReColhe.API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251124184412_AdicionarIndiceUnicoCnpjEmpresa")]
+    partial class AdicionarIndiceUnicoCnpjEmpresa
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -235,9 +238,6 @@ namespace ReColhe.API.Migrations
                         .HasColumnType("int");
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("UsuarioId"));
-
-                    b.Property<string>("Cep")
-                        .HasColumnType("longtext");
 
                     b.Property<string>("Email")
                         .IsRequired()
