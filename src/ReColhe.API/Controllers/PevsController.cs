@@ -31,11 +31,11 @@ namespace ReColhe.API.Controllers
                 return response.StatusCode switch
                 {
                     HttpStatusCode.OK => Ok(response.Data),
-                    HttpStatusCode.Created => CreatedAtAction(nameof(GetPevById), new { id = (response.Data as CriarPevCommandResponse).PevId }, response.Data),
+                    HttpStatusCode.Created => CreatedAtAction(nameof(GetPevById), new { id = (response.Data as CriarPevCommandResponse)!.PevId }, response.Data),
                     HttpStatusCode.NoContent => NoContent(),
                     _ => Ok(response.Data)
                 };
-            }
+            } 
 
             return response.StatusCode switch
             {
@@ -82,14 +82,15 @@ namespace ReColhe.API.Controllers
         }
 
         /// <summary>
-        /// Atualiza os dados de um PEV.
-        /// Rota: PUT /api/v1/pevs/{id}
+        /// Atualiza os dados de um PEV (Atualização parcial via PATCH)
+        /// Rota: PATCH /api/v1/pevs/{id}
         /// </summary>
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdatePev(int id, [FromBody] EditarPevCommand command)
+        [HttpPatch("{id}")]
+        public async Task<IActionResult> EditarPev(int id, [FromBody] EditarPevCommand command)
         {
-            command.SetPevId(id);
-            var response = await _sender.Send(command);
+            var commandComId = command;
+            commandComId.SetPevId(id);
+            var response = await _sender.Send(commandComId);
             return HandleCommandResponse(response);
         }
 

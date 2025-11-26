@@ -19,8 +19,14 @@ namespace ReColhe.Domain.Entidades
         [MaxLength(20)]
         public string Telefone { get; set; } = string.Empty;
 
-        [MaxLength(255)]
-        public string HorarioFuncionamento { get; set; } = string.Empty;
+        [MaxLength(10)]
+        public string OpenTime { get; set; } = string.Empty;
+
+        [MaxLength(10)]
+        public string CloseTime { get; set; } = string.Empty; 
+
+        [MaxLength(50)]
+        public string OpeningDays { get; set; } = string.Empty; 
 
         [MaxLength(255)]
         public string Materiais { get; set; } = string.Empty;
