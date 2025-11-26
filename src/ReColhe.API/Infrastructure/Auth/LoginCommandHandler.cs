@@ -19,7 +19,7 @@ namespace ReColhe.Application.Auth.Login
 
         public async Task<CommandResponse<LoginCommandResponse>> Handle(LoginCommand request, CancellationToken cancellationToken)
         {
-            //  Buscar usuário pelo email
+            // Buscar usuário pelo email
             var usuario = await _usuarioRepository.ObterPorEmailAsync(request.Email);
 
             if (usuario == null)
@@ -30,7 +30,7 @@ namespace ReColhe.Application.Auth.Login
                 );
             }
 
-            //  Verificar a senha
+            // Verificar a senha
             bool senhaValida = BCrypt.Net.BCrypt.Verify(request.Senha, usuario.SenhaHash);
 
             if (!senhaValida)
@@ -41,17 +41,12 @@ namespace ReColhe.Application.Auth.Login
                 );
             }
 
-            //  Gerar o Token
+            // Gerar o Token (Os dados do usuário são embutidos aqui dentro)
             var token = _tokenService.GenerateToken(usuario);
 
-            var response = new LoginCommandResponse(
-                id: usuario.UsuarioId,
-                nome: usuario.Nome,
-                email: usuario.Email,
-                tipoUsuarioId: usuario.TipoUsuarioId,
-                token: token
-            );
+            var response = new LoginCommandResponse(token);
 
+            // Retornar Sucesso
             return CommandResponse<LoginCommandResponse>.Sucesso(response, statusCode: HttpStatusCode.OK);
         }
     }
