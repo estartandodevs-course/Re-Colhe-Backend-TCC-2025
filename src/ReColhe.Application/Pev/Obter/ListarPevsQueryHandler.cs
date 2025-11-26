@@ -28,6 +28,11 @@ namespace ReColhe.Application.Pev.Obter
                     Nome = p.Nome,
                     Endereco = p.Endereco,
                     Telefone = p.Telefone,
+
+                    OpenTime = p.OpenTime,
+                    CloseTime = p.CloseTime,
+                    OpeningDays = p.OpeningDays,
+
                     Materiais = p.Materiais.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
                                            .Select(m => m.Trim())
                                            .ToList(),

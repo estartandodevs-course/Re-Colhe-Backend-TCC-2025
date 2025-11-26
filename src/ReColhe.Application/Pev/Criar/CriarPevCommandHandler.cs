@@ -26,18 +26,20 @@ namespace ReColhe.Application.Pev.Criar
 
             try
             {
-                var materiaisParaDb = string.Join(", ", request.Materiais);
+                var materiaisParaDb = string.Join(",", request.Materiais.Select(m => m.Trim().ToLower()));
 
                 var pev = new ReColhe.Domain.Entidades.Pev
                 {
                     Nome = request.Nome,
                     Endereco = request.Endereco,
                     Telefone = request.Telefone,
-                    HorarioFuncionamento = request.HorarioFuncionamento,
+                    OpenTime = request.OpenTime,
+                    CloseTime = request.CloseTime,
+                    OpeningDays = request.OpeningDays,
 
                     Materiais = materiaisParaDb,
-                    Latitude = request.Posicao[0], // Pega o primeiro item (lat)
-                    Longitude = request.Posicao[1] // Pega o segundo item (lng)
+                    Latitude = request.Posicao[0],
+                    Longitude = request.Posicao[1]
                 };
 
                 await _pevRepository.AddAsync(pev);
