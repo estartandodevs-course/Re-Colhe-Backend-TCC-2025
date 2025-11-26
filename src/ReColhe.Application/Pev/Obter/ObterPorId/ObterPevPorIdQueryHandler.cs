@@ -38,7 +38,9 @@ namespace ReColhe.Application.Pev.Obter
                     Nome = pev.Nome,
                     Endereco = pev.Endereco,
                     Telefone = pev.Telefone,
-                    HorarioFuncionamento = pev.HorarioFuncionamento,
+                    OpenTime = pev.OpenTime,
+                    CloseTime = pev.CloseTime,
+                    OpeningDays = pev.OpeningDays,
 
                     Materiais = pev.Materiais.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
                                            .Select(m => m.Trim())
