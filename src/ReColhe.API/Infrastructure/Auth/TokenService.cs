@@ -21,7 +21,7 @@ namespace ReColhe.API.Infrastructure.Auth
             var tokenHandler = new JwtSecurityTokenHandler();
 
             var secretKey = _configuration["Jwt:Key"];
-            var expireHours = _configuration.GetValue<int>("Jwt:ExpireHours", 8);
+            var expireHours = _configuration.GetValue<int>("Jwt:ExpireHours", 24);
 
             if (string.IsNullOrEmpty(secretKey))
             {
@@ -30,17 +30,17 @@ namespace ReColhe.API.Infrastructure.Auth
 
             var key = Encoding.UTF8.GetBytes(secretKey);
 
-            var claims = new ClaimsIdentity(new[]
+            var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.NameIdentifier, usuario.UsuarioId.ToString()),
-                new Claim(ClaimTypes.Name, usuario.Nome),
-                new Claim(ClaimTypes.Email, usuario.Email),
-                new Claim(ClaimTypes.Role, usuario.TipoUsuarioId.ToString())
-            });
+                new Claim("id", usuario.UsuarioId.ToString()),
+                new Claim("nome", usuario.Nome),
+                new Claim("email", usuario.Email),
+                new Claim("tipo_usuario", usuario.TipoUsuarioId.ToString())
+            };
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {
-                Subject = claims,
+                Subject = new ClaimsIdentity(claims),
                 Expires = DateTime.UtcNow.AddHours(expireHours),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature),
                 Issuer = _configuration["Jwt:Issuer"],
