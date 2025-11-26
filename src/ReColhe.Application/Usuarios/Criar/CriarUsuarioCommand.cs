@@ -13,16 +13,18 @@ namespace ReColhe.Application.Usuarios.Criar
         public string Senha { get; private set; }
         public int TipoUsuarioId { get; private set; }
         public int? EmpresaId { get; private set; }
+        public string? Cep { get; private set; }
 
         public ValidationResult? ResultadoDasValidacoes { get; private set; }
 
-        public CriarUsuarioCommand(string nome, string email, string senha, int tipoUsuarioId, int? empresaId)
+        public CriarUsuarioCommand(string nome, string email, string senha, int tipoUsuarioId, int? empresaId, string? cep)
         {
             Nome = nome;
             Email = email;
             Senha = senha;
             TipoUsuarioId = tipoUsuarioId;
             EmpresaId = empresaId;
+            Cep = cep;
         }
 
         public bool Validar()
@@ -67,8 +69,26 @@ namespace ReColhe.Application.Usuarios.Criar
                 .WithErrorCode(((int)HttpStatusCode.BadRequest).ToString())
                 .WithMessage("Usuários comuns não devem ter empresa vinculada.");
 
+            validacoes.RuleFor(usuario => usuario.Cep)
+                .Must(ValidarCep)
+                .When(usuario => !string.IsNullOrEmpty(usuario.Cep))
+                .WithErrorCode(((int)HttpStatusCode.BadRequest).ToString())
+                .WithMessage("O CEP informado não é válido.");
+
             ResultadoDasValidacoes = validacoes.Validate(this);
             return ResultadoDasValidacoes.IsValid;
+        }
+
+        private bool ValidarCep(string? cep)
+        {
+            if (string.IsNullOrEmpty(cep))
+                return true;
+
+            // Remove caracteres não numéricos
+            cep = new string(cep.Where(char.IsDigit).ToArray());
+
+            // CEP deve ter 8 dígitos
+            return cep.Length == 8;
         }
     }
 }

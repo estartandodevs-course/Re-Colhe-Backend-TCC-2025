@@ -1,32 +1,34 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using ReColhe.Application.Usuarios.Criar;
-using ReColhe.Application.Usuarios.Editar;
-using ReColhe.Application.Usuarios.Excluir;
-using ReColhe.Application.Usuarios.Obter;
+using ReColhe.Application.Empresas.Criar;
+using ReColhe.Application.Empresas.Editar;
+using ReColhe.Application.Empresas.Excluir;
+using ReColhe.Application.Empresas.Listar;
+using ReColhe.Application.Empresas.ObterPorId;
+using ReColhe.Application.Mediator;
 using System.Net;
 
 namespace ReColhe.API.Controllers
 {
     [ApiController]
-    [Route("api/v1/[controller]")]
-    public class UsuariosController : ControllerBase
+    [Route("api/v1/empresas")]
+    public class EmpresasController : ControllerBase
     {
         private readonly ISender _sender;
 
-        public UsuariosController(ISender sender)
+        public EmpresasController(ISender sender)
         {
             _sender = sender;
         }
 
-        private IActionResult HandleCommandResponse<T>(ReColhe.Application.Mediator.CommandResponse<T> response)
+        private IActionResult HandleCommandResponse<T>(CommandResponse<T> response)
         {
             if (response.Success)
             {
                 return response.StatusCode switch
                 {
                     HttpStatusCode.OK => Ok(response.Data),
-                    HttpStatusCode.Created => CreatedAtAction(nameof(ObterUsuarioPorId), new { id = (response.Data as CriarUsuarioCommandResponse)?.UsuarioId }, response.Data),
+                    HttpStatusCode.Created => CreatedAtAction(nameof(GetEmpresaById), new { id = (response.Data as CriarEmpresaCommandResponse)?.EmpresaId }, response.Data),
                     HttpStatusCode.NoContent => NoContent(),
                     _ => Ok(response.Data)
                 };
@@ -42,55 +44,55 @@ namespace ReColhe.API.Controllers
         }
 
         /// <summary>
-        /// Lista todos os usuários
+        /// Lista todas as empresas
         /// </summary>
         [HttpGet]
-        public async Task<IActionResult> ListarUsuarios()
+        public async Task<IActionResult> GetAllEmpresas()
         {
-            var query = new ListarUsuariosQuery();
+            var query = new ListarEmpresasQuery();
             var response = await _sender.Send(query);
             return HandleCommandResponse(response);
         }
 
         /// <summary>
-        /// Busca um usuário específico pelo ID
+        /// Busca uma empresa específica pelo ID
         /// </summary>
         [HttpGet("{id}")]
-        public async Task<IActionResult> ObterUsuarioPorId(int id)
+        public async Task<IActionResult> GetEmpresaById(int id)
         {
-            var query = new ObterUsuarioPorIdQuery(id);
+            var query = new ObterEmpresaPorIdQuery(id);
             var response = await _sender.Send(query);
             return HandleCommandResponse(response);
         }
 
         /// <summary>
-        /// Cadastra um novo usuário
+        /// Cadastra uma nova empresa
         /// </summary>
         [HttpPost]
-        public async Task<IActionResult> CriarUsuario([FromBody] CriarUsuarioCommand command)
+        public async Task<IActionResult> CreateEmpresa([FromBody] CriarEmpresaCommand command)
         {
             var response = await _sender.Send(command);
             return HandleCommandResponse(response);
         }
 
         /// <summary>
-        /// Atualiza os dados de um usuário
+        /// Atualiza os dados de uma empresa
         /// </summary>
         [HttpPut("{id}")]
-        public async Task<IActionResult> EditarUsuario(int id, [FromBody] EditarUsuarioCommand command)
+        public async Task<IActionResult> UpdateEmpresa(int id, [FromBody] EditarEmpresaCommand command)
         {
-            var commandComId = new EditarUsuarioCommand(id, command.Nome, command.Email, command.Cep);
-            var response = await _sender.Send(commandComId);
+            command.SetEmpresaId(id);
+            var response = await _sender.Send(command);
             return HandleCommandResponse(response);
         }
 
         /// <summary>
-        /// Remove um usuário do sistema
+        /// Remove uma empresa do sistema
         /// </summary>
         [HttpDelete("{id}")]
-        public async Task<IActionResult> ExcluirUsuario(int id)
+        public async Task<IActionResult> DeleteEmpresa(int id)
         {
-            var command = new ExcluirUsuarioCommand(id);
+            var command = new ExcluirEmpresaCommand(id);
             var response = await _sender.Send(command);
             return HandleCommandResponse(response);
         }

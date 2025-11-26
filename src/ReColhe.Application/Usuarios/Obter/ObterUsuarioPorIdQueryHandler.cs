@@ -37,6 +37,7 @@ namespace ReColhe.Application.Usuarios.Obter
                     TipoUsuarioId = usuario.TipoUsuarioId,
                     EmpresaId = usuario.EmpresaId,
                     EmpresaNome = usuario.Empresa?.NomeFantasia ?? string.Empty,
+                    Cep = usuario.Cep,
                     PevsFavoritos = usuario.PevFavoritos.Select(pf => new PevSimplesResponse
                     {
                         PevId = pf.Pev.PevId,
